@@ -1,0 +1,517 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+.sidebar {
+ 
+  width: 250px;
+  /* position: fixed;
+    z-index: 1; */
+  top: 0;
+  left: 0;
+  background: linear-gradient(-180deg, #f53d2d, #f63);
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+.sidebar a {
+  padding: 10px 15px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #fff;
+  display: block;
+}
+.sidebar a:hover {
+  color: #fe6433;
+  background-color: #ffffff;
+}
+
+.product-manager h1 {
+  background-color: #fff;
+  line-height: 80px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  border-radius: 15px;
+  padding: 0 20px;
+}
+.main-content {
+  width: 80%;
+
+  padding: 0px 20px;
+}
+
+.app {
+  display: flex;
+  background-color: #f8f8f8;
+}
+.product-name span {
+  font-size: 18px;
+  margin-right: 30px;
+}
+.product-id span {
+  font-size: 18px;
+  margin-right: 30px;
+}
+.product-price span {
+  font-size: 18px;
+  margin-right: 30px;
+}
+.product-detail span {
+  font-size: 18px;
+  margin-right: 30px;
+}
+
+.toolbar {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 5px;
+}
+.button {
+  padding: 10px 20px;
+  width: 260px;
+  height: 40px;
+  text-align: center;
+  background-color: #00ba9d;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+}
+.search-input {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  width: 300px;
+}
+.search-button {
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.filter-item {
+  width: 180px;
+  padding: 5px 10px;
+  margin: 0 5px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+.filter-item:after  {
+  content: "";
+  position: relative;
+  left:20px;
+  top: 50%;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 4px solid rgb(208, 1, 27);
+
+}
+.filter-item span {
+  color: #8d8d99;
+  user-select: none;
+}
+.filter-item:hover {
+  border: 1px #fe6433 solid;
+}
+.filter-bar button {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+.filter-bar button.clear {
+  background-color: white;
+  color: #333;
+  border-color: #ccc;
+}
+.show
+ {display:block !important;
+}
+.subitem-itemfilter {
+  position: absolute;
+  top: 40px;
+  background-color: #ffffff;
+  width: 180px;
+  border-radius: 5px;
+  padding: 5px 20px;
+  display: none;
+}
+.subitem-child {
+  padding: 5 10px;
+}
+.product-table {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+thead {
+  color: #007bff;
+  font-size: 14px;
+  font-weight:100;    
+}
+thead tr th {
+  margin: 20px 0px;
+  height: 80px;
+}
+
+thead tr th:nth-child(3) {
+  margin-left: 20px;
+}
+tbody tr > td:nth-child(2) {
+  max-width: 100px;
+}
+.product-table td {
+  text-align: center; /* Căn giữa nội dung theo chiều ngang */
+  vertical-align: middle; /* Căn giữa nội dung theo chiều dọc */
+ /* Điều chỉnh khoảng cách bên trong nếu cần */
+}
+.horizontal-line {
+  height: 1px;
+  width: 100%; /* Chiều rộng có thể điều chỉnh */
+  background-color: #f8f8f8; /* Màu sắc của dòng kẻ */
+  margin: 10px 0; /* Khoảng cách trên và dưới */
+}
+.table-listproduct td {
+  height: 100px;
+
+}
+.filter-bar button {
+  width: 100px  ;
+  height: 35px;
+  border-radius: 15px;
+  font-size: 15px;
+  margin-left: 5px;
+}
+
+
+
+/* add product */
+.product-add h1 {
+  background-color: #fff;
+  line-height: 80px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  border-radius: 15px;
+  padding: 0 20px;
+}
+
+
+.product-settings {
+  margin-bottom: 20px;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 20px 10px;
+}
+
+.image-upload-box {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.image-box {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  width: calc(33% - 40px); /* Adjust width for 3 boxes per row, subtracting margin */
+  margin: 10px;
+  height: 150px; /* Fixed height for each box */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color:#f8f8f8;
+}
+
+
+.image-box:hover {
+  border-color: #888;
+}
+
+.product-attribute {
+  display: flex;
+
+}
+.product-setting_left {
+  width: 60%;
+}
+.product-setting_right {
+  margin-top: 50px;
+  width: 40%;
+}
+.product-form {
+  background-color: white;
+
+  border-radius: 4px;
+  padding: 20px;
+  max-width: 600px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+ 
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.form-group input[type="date"] {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  height: 40px;
+}
+.form-group input[type="text"]:focus,
+.product-descriptions textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  
+}
+.product-descriptions textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  height: 107px;
+  resize: none;
+
+}
+.btn-addproduct {
+  width: 200px;
+  height: 50px;
+  color: #fff;
+  background-color: #f63;
+  border: none;
+  margin-left:25%;
+  cursor: pointer;
+}
+
+
+/* custom select */
+/* The container must be positioned relative: */
+.custom-select {
+  position: relative;
+  
+}
+
+.custom-select select {
+  display: none; /*hide original SELECT element: */
+}
+
+.select-selected {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+/* Style the arrow inside the select element: */
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  
+  border: 6px solid transparent;
+  border-color:black transparent transparent transparent;
+}
+
+/* Point the arrow upwards when the select box is open (active): */
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #000 transparent;
+  top: 7px;
+}
+
+/* style the items (options), including the selected item: */
+.select-items div,.select-selected {
+  
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+}
+
+/* Style items (options): */
+.select-items {
+  position: absolute;
+  background-color: #ffffff;
+  top: 120%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  border-radius: 10px;
+}
+
+/* Hide the items when the select box is closed: */
+.select-hide {
+  display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.filter-selector {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.btn_filter {
+  color: #fff;
+  background-color: #007bff;
+  border-radius: 10px;
+  border: none;
+  width: 100px;
+}
+.btn_filter:hover {
+  background-color: #0f437a;
+  cursor: pointer;
+}
+.btn_clear {
+  color: #000;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: none;
+  width: 100px;
+  border: 1px solid #007bff;
+}
+.btn_clear:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.order-manager h1 {
+  background-color: #fff;
+  line-height: 80px;
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
+  border-radius: 15px;
+  padding: 0 20px;
+}
+
+.order__filter-selector {
+    display: flex;
+    justify-content: space-around;
+}
+
+.order__filter-selector .form-group {
+  width:50%;
+  padding: 10px 30px;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.stat-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: calc(25% - 10px); /* Adjust the width as needed */
+  margin: 5px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-card .stat-icon {
+  /* Add styles for your icons here */
+}
+
+.stat-info p {
+  margin: 0;
+  color: #666;
+}
+
+.stat-info h3 {
+  margin: 10px 0;
+  color: #333;
+}
+
+.icon_completed {
+  color: #ffffff;
+  background-color: #007bff;
+  width: 45px;
+  height: 45px;
+  padding:7px 5px;
+  border-radius: 5px;
+  
+  font-size: 30px;
+}
+
+.icon_confirmed {
+  color: #ffffff;
+  background-color:rgb(1, 156, 1);
+  width: 45px;
+  height: 45px;
+  padding:7px 5px;
+  border-radius: 5px;
+  font-size: 30px;
+}
+.icon_refund {
+  color: #ffffff;
+  background-color:rgb(34, 31, 31);
+  width: 45px;
+  height: 45px;
+  padding:7px 5px;
+  border-radius: 5px;
+  font-size: 30px;
+}
+.icon_cancel {
+  color: #ffffff;
+  background-color:rgb(187, 24, 24);
+  width: 45px;
+  height: 45px;
+  padding:7px 5px;
+  border-radius: 5px;
+  font-size: 30px;
+}
+
+.order-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+.order-table {
+  background-color: #ffffff;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.table-list_order td {
+  height: 100px;
+}
