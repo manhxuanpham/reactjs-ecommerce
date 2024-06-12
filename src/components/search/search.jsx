@@ -1,7 +1,13 @@
+
+import { useSelector } from "react-redux";
+import {Link} from 'react-router-dom'
 const Search = () => {
+    const ProductItem = useSelector(state=> state.search.productItem)
+    console.log("datasearch",ProductItem)
+
     return (
         <div>
-            &lt;&gt;
+            
             <div className="app__container">
                 <div className="grid wide">
                     <div className="app__content">
@@ -122,62 +128,64 @@ const Search = () => {
                             <div className="home-product">
                                 <div className="grid__row">
                                     {/* product item */}
-                                    <div className="grid__column-2-4">
-                                        <a className="home-product-item" href="product.html">
-                                            <div
-                                                className="home-product-item__img"
-                                                style={{
-                                                    backgroundImage:
-                                                        "url(https://down-vn.img.susercontent.com/file/vn-11134207-7qukw-lftk9tf1knl6de_tn)",
-                                                }}
-                                            />
-                                            <h4 className="home-product-item__name">
-                                                [Mã FAMARAL1 giảm 10K đơn 50K] quần ống rộng suông
-                                                lưng cao khóa trước 1 khuy vải tuyết mưa.
-                                            </h4>
-                                            <div className="home-product-item__price">
-                                                <span className="home-product-item__price-current">
-                                                    1.222.222
-                                                </span>
-                                                <span className="home-product-item__price-old">
-                                                    999.999
-                                                </span>
-                                            </div>
-                                            <div className="home-product-item__action">
-                                                <span className="home-product-item__like home-product-item__liked">
-                                                    <i className="home-product-item__like-empty fa-regular fa-heart" />
-                                                    <i className="home-product-item__like-fill fa-solid fa-heart" />
-                                                </span>
-                                                <div className="home-product-item__rating">
-                                                    <i className="fa-solid fa-star home-product-item__rating-1" />
-                                                    <i className="fa-solid fa-star" />
-                                                    <i className="fa-solid fa-star" />
-                                                    <i className="fa-solid fa-star" />
-                                                    <i className="fa-solid fa-star" />
-                                                    <span className="home-product-item__brand home-product-item__brand-color">
-                                                        Đã bán 118,5k
+                                    {ProductItem.map((e,i)=>(
+                                        <div key={i} className="grid__column-2-4">
+                                            <Link className="home-product-item" to={`/product/${e.product_id}`}>
+                                                <div
+                                                    className="home-product-item__img"
+                                                    style={{
+                                                        backgroundImage:
+                                                            `url(${e.product_thumb})`,
+                                                    }}
+                                                />
+                                                <h4 className="home-product-item__name">
+                                                    {e.product_name}
+                                                </h4>
+                                                <div className="home-product-item__price">
+                                                    {/* <span className="home-product-item__price-current">
+                                                        999,999 đ
+                                                    </span> */}
+                                                    <span className="home-product-item__price-old">
+                                                        {new Intl.NumberFormat().format(e.product_price)}
                                                     </span>
                                                 </div>
-                                                <div className="home-product-item__origin">
-                                                    <div className="home-product-item__origin-name">
-                                                        Hà Nội
+                                                <div className="home-product-item__action">
+                                                    <span className="home-product-item__like home-product-item__liked">
+                                                        <i className="home-product-item__like-empty fa-regular fa-heart" />
+                                                        <i className="home-product-item__like-fill fa-solid fa-heart" />
+                                                    </span>
+                                                    <div className="home-product-item__rating">
+                                                        <i className="fa-solid fa-star home-product-item__rating-1" />
+                                                        <i className="fa-solid fa-star" />
+                                                        <i className="fa-solid fa-star" />
+                                                        <i className="fa-solid fa-star" />
+                                                        <i className="fa-solid fa-star" />
+                                                        <span className="home-product-item__brand home-product-item__brand-color">
+                                                            Đã bán 118,5k
+                                                        </span>
+                                                    </div>
+                                                    <div className="home-product-item__origin">
+                                                        <div className="home-product-item__origin-name">
+                                                            Hà Nội
+                                                        </div>
+                                                    </div>
+                                                    <div className="home-product-item__favourite">
+                                                        <i className="fa-solid fa-check" />
+                                                        Yêu Thích
+                                                    </div>
+                                                    <div className="home-product-item__sale-off">
+                                                        <div className="home-product-item__sale-off-percent">
+                                                            10%
+                                                        </div>
+                                                        <div className="home-product-item__sale-off-label">
+                                                            GIẢM
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className="home-product-item__favourite">
-                                                    <i className="fa-solid fa-check" />
-                                                    Yêu Thích
-                                                </div>
-                                                <div className="home-product-item__sale-off">
-                                                    <div className="home-product-item__sale-off-percent">
-                                                        10%
-                                                    </div>
-                                                    <div className="home-product-item__sale-off-label">
-                                                        GIẢM
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
+                                            </Link>
+                                        </div>
+                                    ))}
+                                    
                                 </div>
                             </div>
                             <ul className="pagination home-product__pagination">

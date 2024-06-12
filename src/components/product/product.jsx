@@ -1,25 +1,104 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { getProduct } from '../service/product.service';
+import { useDispatch } from "react-redux";
+import { getProduct } from '../../service/product.service';
+import { addToCart, getCartProducts } from '../../service/cart.service';
 import { useSelector } from "react-redux";
+import './product.scss'
 const Product = () => {
+    const user = useSelector(state => state.auth.login.currentUser)
+    const dispatch = useDispatch()
+    const accessToken = user?.data.tokens.accessToken
+    const userId = user?.data.shop._id
     const { productId } = useParams();
     const [product, setProduct] = useState({})
-    // const user = useSelector(state => state.auth.login.currentUser)
-    // const accessToken = user?.data.tokens.accessToken
-    // const userId = user?.data.shop._id
+    const [selectedColor, setSelectedColor] = useState('');
+    const [selectedOptions, setSelectedOptions] = useState({});
+    const [selectionIndexs, setSelectionIndexs] = useState([]);
+    const [selectedSKU, setSelectedSKU] = useState(null);
+    const [quantity, setQuantity] = useState(1);
+
+    const handleIncrease = () => {
+        if (quantity < product.spu_info.quantity) {  // Giới hạn số lượng tối đa là 521
+            setQuantity(prevQuantity => prevQuantity + 1);
+            console.log(quantity)
+        }
+    };
+
+    const handleDecrease = () => {
+        if (quantity > 1) {  // Số lượng tối thiểu là 1
+            setQuantity(prevQuantity => prevQuantity - 1);
+            console.log(quantity)
+
+        }
+    };
+    const handleAddToCart = async () => {
+
+        const price = selectedSKU?.sku_price
+        const dataProduct = {
+            userId: userId,
+            product: {
+                product_id: product.spu_info.product_id,
+                product_name: product.spu_info.product_name,
+                product_shop_id: product.spu_info.product_shop,
+                product_thumb: product.spu_info.product_thumb,
+                product_quantity: quantity,
+                product_price: price,
+                product_variations: selectedOptions,
+                sku_id: selectedSKU?.sku_id
+            }
+        }
+
+        await addToCart(dataProduct, accessToken, userId)
+        await getCartProducts(userId, accessToken, dispatch);
+
+    }
+    const handleOptionClick = (variationName, option, i) => {
+        setSelectedOptions(prev => ({
+            ...prev,
+            [variationName]: option
+        }));
+        setSelectionIndexs(prev => {
+            if (prev.length === 2) {
+                // Nếu mảng đã có 2 giá trị, reset và bắt đầu lại với giá trị hiện tại
+                return [i];
+            } else {
+                // Nếu mảng chưa đầy, chỉ cần thêm giá trị mới
+                return [...prev, i];
+            }
+        });
+    };
+    useEffect(() => {
+        if (selectionIndexs.length === 2) { // Giả sử chỉ khi có đủ 2 chỉ số mới tìm kiếm SKU
+            const foundSKU = product.sku_list.find(sku =>
+                JSON.stringify(sku.sku_tier_idx) === JSON.stringify(selectionIndexs)
+            );
+            if (foundSKU) {
+                setSelectedSKU(foundSKU);
+                // Bạn có thể thực hiện cập nhật DOM tại đây hoặc sử dụng giá trị foundSKU để hiển thị
+                updateDOMWithSKU(foundSKU);
+            }
+        }
+    }, [selectionIndexs]);
+
+    const updateDOMWithSKU = (sku) => {
+        document.getElementById('price').textContent = `₫ ${new Intl.NumberFormat().format(sku.sku_price)}`;
+        document.getElementById('stock').textContent = `Tồn kho: ${sku.sku_stock}`;
+    };
 
     useEffect(() => {
         const fetchProduct = async () => {
             const res = await getProduct(productId)
-            console.log(res.data)
+            console.log("$PRODUCT:", res.data)
             setProduct(res.data);
         }
         fetchProduct()
     }, [])
+
+
     return (
-        <div>
-            &lt;&gt;
+        <div className="product-component">
+
             <div className="app-container">
                 <div className="grid wide">
                     {/* category  */}
@@ -37,13 +116,9 @@ const Product = () => {
                     {/*  */}
                     <div className="product-container">
                         <div className="product-image">
-                            <img src="./assets/img/imgProductdetail.jfif" alt="Product Image" className="product-image_main" />
+                            <img src={product.spu_info?.product_thumb} alt="Product Image" className="product-image_main" />
                             <div className="product-imgage_thumbnail">
-                                <img src="./assets/img/imgProductdetail.jfif" />
-                                <img src="./assets/img/imgProductdetail.jfif" />
-                                <img src="./assets/img/imgProductdetail.jfif" />
-                                <img src="./assets/img/imgProductdetail.jfif" />
-                                <img src="./assets/img/imgProductdetail.jfif" />
+                                {/* <img src="./assets/img/imgProductdetail.jfif" /> */}
                             </div>
                         </div>
                         <div className="product-info">
@@ -57,7 +132,7 @@ const Product = () => {
                             </div>
                             <div className="product-price">
                                 <div className="product-original-price">₫80.000</div>
-                                <div className="product-price_sale">₫{new Intl.NumberFormat().format(product?.spu_info?.product_price)}</div>
+                                <div id="price" className="product-price_sale">₫{new Intl.NumberFormat().format(product?.spu_info?.product_price)}</div>
                                 <div className="product-price_salepercent">40% GIẢM</div>
                             </div>
                             <div className="voucher-container">
@@ -72,9 +147,11 @@ const Product = () => {
                                     <div className="title-type">{e.name}</div>
                                     <div className="color-options-container">
                                         {/* Repeat this block for each color option */}
-                                        {e.options.map((o, i) => (
-                                            <div key={i} className="color-option">
-                                                <img src={e.img} alt="img" />
+                                        {e?.options?.map((o, i) => (
+                                            <div key={i}
+                                                className={`color-option ${selectedOptions[e.name] === o ? 'selected' : ''}`}
+                                                onClick={() => handleOptionClick(e.name, o, i)}  >
+                                                {/* <img src={e.img} alt="img" /> */}
                                                 <span className="color-name">{o}</span>
                                             </div>
 
@@ -94,15 +171,16 @@ const Product = () => {
                             </div> */}
                             <div className="quantity-selector">
                                 <label htmlFor="quantity">Số Lượng</label>
-                                <button >-</button>
-                                <input id="quantity" defaultValue={1} min={1} max={521} />
-                                <button >+</button>
-                                <span className="quantity-info">521 sản phẩm có sẵn</span>
+                                {/* <button onClick={ handleDecrease}>-</button> */}
+                                <input id="quantity" type="number" value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} min={1} max={product?.spu_info?.product_quantity} />
+                                {/* <button onClick={  handleIncrease}>+</button> */}
+                                <span id="stock" className="quantity-info">Số lượng tồn kho: {product?.spu_info?.product_quantity}</span>
                             </div>
-                            <div className="action-buttons">
-                                <button type="button">Thêm Vào Giỏ Hàng</button>
+                            {product?.spu_info?.product_quantity === 0 ? <div className="out-of-stock">Sản Phẩm Đã Bán Hết</div> : <div className="action-buttons">
+                                <button onClick={handleAddToCart} type="button">Thêm Vào Giỏ Hàng</button>
                                 <button type="button">Mua Ngay</button>
-                            </div>
+                            </div>}
+
                         </div>
                     </div>
                     <div className="shop-profile">
@@ -133,33 +211,22 @@ const Product = () => {
                         <div className="product-details-header">CHI TIẾT SẢN PHẨM</div>
                         <table className="details-table">
                             <tbody>
-                                {
+                                {product?.spu_info?.product_attributes?.map((e, i) => (
                                     <tr>
-                                        <th>Danh</th>
-                                        <td>
-                                            <a > Shopee </a> &gt;
-                                            <a >  Thời Trang Nữ</a> &gt;
-                                            <a >  Áo len &amp; Cardigan </a>
-                                        </td>
+                                        <td>{e.name}</td>
+                                        <td>{e.value}</td>
                                     </tr>
-                                }
+
+                                ))}
 
                                 {/* ... more details ... */}
-                            </tbody></table>
+                            </tbody>
+                        </table>
                         <div className="product-details-header">MÔ TẢ SẢN PHẨM</div>
-                        <p>⚠️Lưu ý: Đây là hàng hàng nhà máy Quảng Châu. Len Quảng Châu thì xịn khỏi nói. Chất len mềm mịn, đanh tay, ko bai ko xù như len xưởng VN gia công 😎
-                        </p><p>
-                            🚫 Shop ko bán hàng xưởng VN gia công ❌❌❌
-                        </p>
-                        <p>
-                            Áo thiết kế ôm gọn cổ, giữ ấm tốt mà không gây vướng như các loại áo len cao cổ thông thường. Đặc biệt, len phần cổ có đường gân nhỏ hơn phần thân, tăng tính thẩm mỹ cho sản phẩm 😍
-                        </p>
-                        <p />
-                        <p>
-                            💥LƯU Ý:
-                        </p><p>Hàng sẽ về trong vòng 5-10 ngày, trường hợp tắc biên sẽ chậm hơn 1 chút. Vì vậy, trong vòng 15 ngày kể từ ngày đặt hàng, các bạn vui lòng KHÔNG HỦY ĐƠN nhé.</p>❌
-                        <p>❌Chỉ hoàn trả hàng với các trường hợp: Sai mẫu mã, size, sp lỗi do nhà sản xuất. Các trường hợp còn lại shop ko nhận đổi trả ạ.</p>
-                        <p />
+                        <div dangerouslySetInnerHTML={{ __html: product?.spu_info?.product_description }} />
+
+
+
                     </div>
                     {/* Product review */}
                     <div className="review-container">

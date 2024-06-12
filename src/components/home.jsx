@@ -11,8 +11,6 @@ const Home = () => {
     const navigate = useNavigate()
 
     const user = useSelector(state => state.auth.login?.currentUser)
-
-
     useEffect(() => {
 
         async function fetchData() {

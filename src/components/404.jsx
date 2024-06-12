@@ -1,3 +1,4 @@
+
 const ErrorBoundary = () => {
     return <>Error page</>;
 };

@@ -1,5 +1,9 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import authReducer from './authSlice'
+import cartReducer from './cartSlice'
+import checkoutReducer from './checkoutSlice'
+import userAddressReducer from './userAddressSlice'
+import searchReducer from './searchSlice'
 import {
     persistStore,
     persistReducer,
@@ -17,10 +21,15 @@ const persistConfig = {
     key: 'root',
     version: 1,
     storage,
-    whitelist:['auth']
+    // whitelist: ['auth', 'cart', 'userAddress','checkout' ],
+    // blacklist:['cart']
 }
 const rootReducer = combineReducers({
     auth: authReducer,
+    cart: cartReducer,
+    checkout: checkoutReducer,
+    userAddress: userAddressReducer,
+    search:searchReducer
 
 })
 const persistedReducer = persistReducer(persistConfig, rootReducer)

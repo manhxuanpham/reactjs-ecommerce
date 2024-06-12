@@ -1,17 +1,38 @@
 import React, { Component } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { logout } from "../service/access.service";
+import { logout } from "../../service/access.service";
+import { getCartProducts } from '../../service/cart.service';
+import './header.scss'
+import { searchProduct } from "../../service/search.service";
 const Header = () => {
     const user = useSelector((state) => state.auth.login?.currentUser) || null;
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [wordSearch,setwordSearch]  = useState("");
+    const accessToken = user?.data.tokens.accessToken
+    const userId = user?.data.shop._id
+    const cartItem = useSelector((state) => state.cart.cartItem) || null
     const navigate = useNavigate()
     const dispatch = useDispatch()
-
-    const handleLogout = ()=> {
-        logout(user, dispatch,navigate)
+    console.log("cartItem", cartItem);
+    const handleLogout = () => {
+        logout(user, dispatch, navigate)
     }
     const name = user?.data.shop.name || null;
+    useEffect(() => {
+        async function fetchData() {
+            await getCartProducts(userId, accessToken, dispatch);
 
+
+        }
+        fetchData();
+
+    }, [])
+
+    const handleSearch = ()=> {
+        searchProduct(wordSearch,dispatch,navigate)
+    }
     return (
         <header className="header">
             <div className="grid wide">
@@ -157,7 +178,7 @@ const Header = () => {
                                 <li className="header__navbar-item header__navbar-user">
                                     <img
                                         src="https://yt3.ggpht.com/yti/APfAmoGJ3f16G_DsVVoPeynmX-no3Xp6cnIwmMZ8TShZ=s88-c-k-c0x00ffffff-no-rj-mo"
-                                        alt
+
                                         className="header__navber-user-img"
                                     />
                                     <span className="header__navbar-user-name">
@@ -174,7 +195,7 @@ const Header = () => {
                                             <a href="#">Đơn mua</a>
                                         </li>
                                         <li className="header__navbar-item-item header__nav-user-item--separate">
-                                                <Link onClick={handleLogout}>Đăng xuất</Link>
+                                            <Link onClick={handleLogout}>Đăng xuất</Link>
                                         </li>
                                     </ul>
                                 </li>
@@ -202,6 +223,9 @@ const Header = () => {
                                 type="text"
                                 className="header__search-input"
                                 placeholder="Nhập để tìm kiếm sản phẩm"
+                                onChange={(e)=> {
+                                    setwordSearch(e.currentTarget.value)
+                                }}
                             />
                             <div className="header__search-history">
                                 <h3 className="header__search-story-heading">Lịch sử tìm kiếm</h3>
@@ -238,101 +262,89 @@ const Header = () => {
                               </li>
                           </ul>
                       </div> */}
-                        <button className="header__search-btn">
+                        <button onClick={handleSearch} className="header__search-btn">
                             <i className="fa-solid fa-magnifying-glass header__search-btn-icon" />
                         </button>
                     </div>
                     {/* cart layout */}
-                    <div className="header__cart">
-                        <div className="header__cart-wrap">
-                            <i className="header__cart-icon fa-solid fa-cart-shopping" />
-                            <span className="header__cart-wrap-notice">3</span>
-                            {/* no cart:.header__cart-list__no-cart */}
-                            <div className="header__cart-list">
-                                <img
-                                    src="data:image/png;base64,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"
-                                    alt="img"
-                                    className="header__cart-list-img"
-                                />
-                                <span className="header__cart-list-cart-msg">Chưa có sản phẩm</span>
-                                <h4 className="header__cart-heading">Sản phẩm đã thêm</h4>
-                                <ul className="header__cart-list-item">
-                                    {/* c */}
-                                    <li className="header__cart-item">
-                                        <img
-                                            src="https://cf.shopee.vn/file/2a6382229fdcaa6eae78b9099a7f34db_tn"
-                                            alt="img"
-                                            className="header__cart-img"
-                                        />
-                                        <div className="header__cart-tiem-info">
-                                            <div className="header__cart-item-head">
-                                                <h5 className="header__cart-item-name">
-                                                    Áo abcxyz Áo abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo
-                                                    abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo
-                                                    abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo
-                                                    abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo
-                                                    abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo
-                                                    abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo abcxyzÁo
-                                                    abcxyzÁo abcxyzÁo abcxyz
-                                                </h5>
-                                                <div className="header__cart-item-price-wrap">
-                                                    <span className="header__cart-item-price">
-                                                        20000
-                                                    </span>
-                                                    <span className="header__cart-item-muntiply">
-                                                        x
-                                                    </span>
-                                                    <span className="header__cart-item-qnt">2</span>
-                                                </div>
-                                            </div>
-                                            <div className="header__cart-item-body">
-                                                <span className="header__cart-item-description">
-                                                    Phân loại Bạc
-                                                </span>
-                                                <span className="header__cart-item-remove">
-                                                    Xoá
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                    <li className="header__cart-item">
-                                        <img
-                                            src="https://cf.shopee.vn/file/2a6382229fdcaa6eae78b9099a7f34db_tn"
-                                            alt="img"
-                                            className="header__cart-img"
-                                        />
-                                        <div className="header__cart-tiem-info">
-                                            <div className="header__cart-item-head">
-                                                <h5 className="header__cart-item-name">
-                                                    Áo abcxyz
-                                                </h5>
-                                                <div className="header__cart-item-price-wrap">
-                                                    <span className="header__cart-item-price">
-                                                        20000
-                                                    </span>
-                                                    <span className="header__cart-item-muntiply">
-                                                        x
-                                                    </span>
-                                                    <span className="header__cart-item-qnt">2</span>
-                                                </div>
-                                            </div>
-                                            <div className="header__cart-item-body">
-                                                <span className="header__cart-item-description">
-                                                    Phân loại Bạc
-                                                </span>
-                                                <span className="header__cart-item-remove">
-                                                    Xoá
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <a href="#" className="header__cart-view-cart">
-                                    Xem giỏ hàng
-                                </a>
+                    <Link to="/cart">
+                        <div className="header__cart">
+                            <div className="header__cart-wrap">
+                                <i className="header__cart-icon fa-solid fa-cart-shopping" />
+                                <span className="header__cart-wrap-notice">{cartItem ? cartItem.cart_products.length : 0}</span>
+                                {/* no cart:.header__cart-list__no-cart */}
+                                <div className="header__cart-list">
+                                    {!cartItem || cartItem.length === 0 && (
+                                        <>
+
+                                            <img className="cart_img-empty" src="./assets/img/emty_cart.jpg"></img>
+
+                                        </>
+
+                                    )}
+
+                                    {cartItem &&
+                                        <>
+                                            <h4 className="header__cart-heading">Sản phẩm đã thêm</h4>
+                                            {
+                                                cartItem.cart_products.map((Item, i) => (
+                                                    <ul key={i} className="header__cart-list-item">
+                                                        {/* c */}
+                                                        <li className="header__cart-item">
+                                                            <img
+                                                                src={Item?.product_thumb}
+                                                                alt="img"
+                                                                className="header__cart-img"
+                                                            />
+                                                            <div className="header__cart-tiem-info">
+                                                                <div className="header__cart-item-head">
+                                                                    <h5 className="header__cart-item-name">
+                                                                        {Item?.product_name}
+                                                                    </h5>
+                                                                    <div className="header__cart-item-price-wrap">
+                                                                        <span className="header__cart-item-price">
+                                                                            {new Intl.NumberFormat().format(Item?.product_price)}đ
+                                                                        </span>
+                                                                        <span className="header__cart-item-muntiply">
+                                                                            x
+                                                                        </span>
+                                                                        <span className="header__cart-item-qnt">{Item?.product_quantity}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="header__cart-item-body">
+                                                                    <span className="header__cart-item-description">
+                                                                        <span>Phân loại hàng: {Object.entries(Item?.product_variations).map(([key, value], index) => (
+                                                                            <span key={index}> {value}</span>
+                                                                        ))}</span>
+                                                                    </span>
+                                                                    <span className="header__cart-item-remove">
+                                                                        Xoá
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+
+                                                    </ul>
+                                                ))
+                                            }
+                                        </>
+
+
+
+
+                                    }
+                                    {cartItem && cartItem.length > 0 && (
+                                        <Link to={"/cart"} className="header__cart-view-cart">
+                                            Xem giỏ hàng
+                                        </Link>
+                                    )}
+
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                    </Link>
+
                     {/* Text suggets search */}
                 </div>
                 <div className="header__suggets">

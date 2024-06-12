@@ -37,7 +37,7 @@ export const logout = async (user, dispatch, navigate) => {
     dispatch(logoutStart());
     try {
         
-        const response = await apiJWT.post('/v1/api/shop/logout',{},{
+        const response = await apiClient.post('/v1/api/shop/logout',{},{
             headers: {
                 "authorization":user.data.tokens.accessToken,
                 "x-client-id":user.data.shop._id
@@ -50,6 +50,7 @@ export const logout = async (user, dispatch, navigate) => {
     } catch (error) {
         console.log(error);
         dispatch(logoutError())
+        MESSAGE('Error', 'Thông báo', 'Có lỗi đã xảy ra')
 
     }
 }

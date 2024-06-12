@@ -1,0 +1,29 @@
+.cart_voucher-prices {
+    a {
+        cursor: pointer;
+    }
+}
+
+/* CSS */
+.vouchers {
+  display: flex; /* Arrange vouchers horizontally */
+  flex-wrap: wrap; /* Wrap to multiple lines if needed */
+  margin: 20px;
+}
+
+.voucher {
+  margin: 10px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.voucher input[type="radio"] {
+  margin-right: 10px;
+}
+
+.voucher label {
+  display: inline-block;
+  cursor: pointer;
+}

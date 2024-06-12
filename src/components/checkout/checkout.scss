@@ -1,0 +1,18 @@
+.Order__container {
+    .product-details {
+        display: flex;
+    }
+    .item-details span {
+        min-width: 45%;
+        margin-left: 15px;
+    }
+    .item-price {
+        margin-left: 40px;
+    }
+    .item-price span {
+        width: 15%;
+    }
+    .item-details h3 {
+        
+    }
+}

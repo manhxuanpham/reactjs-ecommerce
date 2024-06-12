@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter ,RouterProvider} from 'react-router-dom';
+import { RouterProvider} from 'react-router-dom';
 import router from './router';
 import { Provider } from 'react-redux';
 import  {store, persistor }  from './redux/store';
@@ -14,9 +14,9 @@ root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
 
-      <React.StrictMode>
+      {/* <React.StrictMode> */}
         <RouterProvider router={router} ></RouterProvider>
-      </React.StrictMode>
+      {/* </React.StrictMode> */}
     </PersistGate>
   </Provider>
 );
